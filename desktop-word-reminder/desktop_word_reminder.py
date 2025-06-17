@@ -126,19 +126,19 @@ class DesktopWordReminder:
         
         if uk_phone == us_phone and uk_phone:
             # 英式美式音标相同且不为空，直接显示
-            phonetic = f"[{uk_phone}]"
+            phonetic = f"英 & 美 [{uk_phone}]"
         elif not uk_phone and us_phone:
             # 只有美式音标
-            phonetic = f"美[{us_phone}]"
+            phonetic = f"美 [{us_phone}]"
         elif uk_phone and not us_phone:
             # 只有英式音标
-            phonetic = f"英[{uk_phone}]"
+            phonetic = f"英 [{uk_phone}]"
         elif uk_phone and us_phone and uk_phone != us_phone:
             # 两种音标都有且不同，检查长度
-            full_phonetic = f"英[{uk_phone}] / 美[{us_phone}]"
+            full_phonetic = f"英 [{uk_phone}] / 美 [{us_phone}]"
             # 如果组合音标过长（超过30个字符），只显示英式音标
             if len(full_phonetic) > 30:
-                phonetic = f"英[{uk_phone}]"
+                phonetic = f"英 [{uk_phone}]"
             else:
                 phonetic = full_phonetic
         else:
