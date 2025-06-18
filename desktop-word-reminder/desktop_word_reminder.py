@@ -5,6 +5,7 @@ import threading
 import time
 from datetime import datetime
 import os
+import tkinter as tk
 
 class DesktopWordReminder:
     def __init__(self):
@@ -19,8 +20,9 @@ class DesktopWordReminder:
         """设置窗口属性"""
         self.root.title("桌面单词提示")
         self.root.overrideredirect(True)  # 去除窗口边框
-        self.root.attributes('-alpha', 0.7)  # 设置透明度
+        self.root.attributes('-alpha', 1.0)  # 设置窗口完全不透明
         self.root.attributes('-topmost', False)  # 不置顶
+        self.root.wm_attributes('-transparentcolor', 'black')  # 设置黑色为透明色
         
         # 设置窗口大小和位置（居中上方）
         window_width = 800
