@@ -12,6 +12,7 @@ class DesktopWordReminder:
         self.root = tk.Tk()
         self.setup_window()
         self.load_words()
+        self.load_birthdays()
         self.current_word = None
         self.setup_ui()
         self.start_timer()
@@ -46,6 +47,19 @@ class DesktopWordReminder:
         except json.JSONDecodeError:
             print("词库文件格式错误")
             self.words = []
+            
+    def load_birthdays(self):
+        """加载生日数据"""
+        try:
+            with open('birthdays.json', 'r', encoding='utf-8') as f:
+                self.birthdays = json.load(f)
+            print(f"成功加载 {len(self.birthdays)} 个学生生日")
+        except FileNotFoundError:
+            print("生日文件未找到")
+            self.birthdays = []
+        except json.JSONDecodeError:
+            print("生日文件格式错误")
+            self.birthdays = []
             
     def setup_ui(self):
         """设置用户界面"""
@@ -110,10 +124,48 @@ class DesktopWordReminder:
         
     def on_click(self, event):
         """点击事件处理"""
-        self.show_random_word()
+        # 如果今天有生日，点击时不做任何操作，保持显示生日祝福
+        birthday_students = self.check_today_birthdays()
+        if not birthday_students:
+            # 只有在没有生日时才允许点击切换单词
+            self.show_random_word()
+        
+    def check_today_birthdays(self):
+        """检查今日是否有学生生日"""
+        today = datetime.now().strftime("%m-%d")
+        birthday_students = []
+        
+        for student in self.birthdays:
+            if student['birthday'] == today:
+                birthday_students.append(student['name'])
+                
+        return birthday_students
+        
+    def show_birthday_greeting(self, students):
+        """显示生日祝福"""
+        if len(students) == 1:
+            greeting = f"{students[0]} 同学，生日快乐！"
+        else:
+            names = "、".join(students)
+            greeting = f"{names} 同学，生日快乐！"
+            
+        # 显示生日祝福
+        self.word_label.config(text=greeting)
+        # self.phonetic_label.config(text="生日快乐！🎉🎂🎈")
+        # self.meaning_label.config(text="祝你们在新的一岁里身体健康，学习进步，天天开心！")
+        
+
 
     def show_random_word(self):
-        """显示随机单词"""
+        """显示随机单词或生日祝福"""
+        # 首先检查今日是否有学生生日
+        birthday_students = self.check_today_birthdays()
+        if birthday_students:
+            # 如果是生日当天，默认只显示生日祝福
+            self.show_birthday_greeting(birthday_students)
+            return
+            
+        # 如果没有生日，显示随机单词
         if not self.words:
             return
             
